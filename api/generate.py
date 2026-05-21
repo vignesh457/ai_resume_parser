@@ -214,14 +214,35 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({"task_id": task_id}).encode('utf-8'))
 
     def do_GET(self):
-        query_components = parse_qs(urlparse(self.path).query)
+        parsed = urlparse(self.path)
+        query_components = parse_qs(parsed.query)
         task_id = query_components.get("task_id", [None])[0]
         download_trigger = query_components.get("download", [None])[0]
-        
+        path = parsed.path
+
+        # If no task_id provided, treat as a health check or static file request
         if not task_id:
-            self.send_response(400)
+            # Serve the project's index.html for root requests when available
+            if path in ('/', '/index.html'):
+                try:
+                    index_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'index.html'))
+                    with open(index_path, 'r', encoding='utf-8') as fh:
+                        content = fh.read()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/html; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(content.encode('utf-8'))
+                    return
+                except Exception:
+                    # Fall through to return a simple JSON health response
+                    pass
+
+            # Generic health check response for probes without task_id
+            self.send_response(200)
             self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Content-Type', 'application/json')
             self.end_headers()
+            self.wfile.write(json.dumps({"status": "OK"}).encode('utf-8'))
             return
 
         status = redis.get(f"status:{task_id}")
