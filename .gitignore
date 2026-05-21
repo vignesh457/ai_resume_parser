@@ -1,0 +1,24 @@
+# Secret Environment Variables (CRITICAL - Never commit this!)
+.env
+.env.local
+
+# Python Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache & Compiled Files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Word Documents generated locally during testing
+*.docx
+!template.docx  # (Optional: Add an exclamation mark if you have a baseline template you WANT to track)

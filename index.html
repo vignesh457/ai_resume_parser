@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant ATS Resume Tailor</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 40px 20px; }
+        .container { max-width: 800px; background: white; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h2 { color: #1e293b; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        label { font-weight: 600; display: block; margin: 20px 0 8px; color: #475569; }
+        textarea { width: 100%; height: 220px; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; resize: vertical; font-size: 14px; }
+        button { background: #115394; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.2s; }
+        button:hover { background: #0b4376; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; }
+        
+        #statusBox { margin-top: 20px; padding: 15px; border-radius: 6px; font-weight: 500; display: none; text-align: center; }
+        .processing { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .error { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        /* Dashboard Styles */
+        .dashboard { display: none; margin-top: 25px; border-top: 2px dashed #cbd5e1; padding-top: 20px; }
+        .metrics-row { display: flex; gap: 20px; margin-bottom: 25px; }
+        .metric-card { flex: 1; background: #f1f5f9; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0; }
+        .metric-val { font-size: 36px; font-weight: 800; margin-top: 5px; }
+        .score-before { color: #b91c1c; }
+        .score-after { color: #15803d; }
+        .changes-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; }
+        .changes-box h3 { margin-top: 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;}
+        .changes-list { padding-left: 20px; margin: 0; }
+        .changes-list li { margin-bottom: 8px; font-size: 14px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ATS Resume Tailoring Assistant</h2>
+    <p style="color: #64748b; font-size: 14px;">Optimize your layout profile directly against the target employer parameters using background execution loops.</p>
+    
+    <label for="jd">Target Job Description</label>
+    <textarea id="jd" placeholder="Paste the target employer job description details or requirement lists here..."></textarea>
+
+    <button id="submitBtn" onclick="startTailoring()">Tailor Resume & Analyze Score</button>
+    
+    <div id="statusBox"></div>
+
+    <div id="dashboard" class="dashboard">
+        <div class="metrics-row">
+            <div class="metric-card">
+                <div style="font-size: 14px; font-weight: 600; color: #64748b;">Original ATS Match Score</div>
+                <div id="scoreBefore" class="metric-val score-before">0%</div>
+            </div>
+            <div class="metric-card" style="background: #f0fdf4; border-color: #bbf7d0;">
+                <div style="font-size: 14px; font-weight: 600; color: #166534;">Tailored ATS Match Score</div>
+                <div id="scoreAfter" class="metric-val score-after">0%</div>
+            </div>
+        </div>
+        <div class="changes-box">
+            <h3>Key Optimizations Applied</h3>
+            <ul id="changesList" class="changes-list"></ul>
+        </div>
+        <button id="downloadBtn" style="background: #15803d; margin-top: 20px;">Download Optimized Resume (.DOCX)</button>
+    </div>
+</div>
+
+<script>
+    async function startTailoring() {
+        const jd = document.getElementById('jd').value.trim();
+        const btn = document.getElementById('submitBtn');
+        const box = document.getElementById('statusBox');
+        const dash = document.getElementById('dashboard');
+
+        if (!jd) { 
+            alert('Please provide the target job description requirements to begin alignment.'); 
+            return; 
+        }
+
+        btn.disabled = true;
+        dash.style.display = 'none';
+        box.className = 'processing';
+        box.style.display = 'block';
+        box.innerText = 'Initializing Secure Job Session...';
+
+        try {
+            // Sending down solely the JD mapping token variable parameter
+            const res = await fetch('http://localhost:8000', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ jd })
+            });
+            const data = await res.json();
+            
+            if(data.task_id) {
+                pollStatus(data.task_id);
+            } else {
+                throw new Error('Task Allocation Denied.');
+            }
+        } catch (err) {
+            showError(err.message);
+        }
+    }
+
+    async function pollStatus(taskId) {
+        const box = document.getElementById('statusBox');
+        const interval = setInterval(async () => {
+            try {
+                box.innerText = 'Optimizing matching criteria with Gemini...';
+                const res = await fetch(`http://localhost:8000?task_id=${taskId}`);
+                const data = await res.json();
+                
+                if (data.status === "COMPLETED") {
+                    clearInterval(interval);
+                    box.style.display = 'none';
+                    document.getElementById('submitBtn').disabled = false;
+                    
+                    // Populate diagnostics view dashboard
+                    document.getElementById('scoreBefore').innerText = data.analytics.ats_score_before + "%";
+                    document.getElementById('scoreAfter').innerText = data.analytics.ats_score_after + "%";
+                    
+                    const listContainer = document.getElementById('changesList');
+                    listContainer.innerHTML = '';
+                    data.analytics.modifications.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${item.section}:</strong> ${item.description}`;
+                        listContainer.appendChild(li);
+                    });
+                    
+                    document.getElementById('dashboard').style.display = 'block';
+                    
+                    // Bind file streaming link explicitly
+                    document.getElementById('downloadBtn').onclick = () => {
+                        window.location.href = `http://localhost:8000?task_id=${taskId}&download=true`;
+                    };
+                } else if (data.status && data.status.startsWith('FAILED')) {
+                    clearInterval(interval);
+                    showError(data.status);
+                }
+            } catch (err) {
+                clearInterval(interval);
+                showError('Status Check Interrupted.');
+            }
+        }, 2500);
+    }
+
+    function showError(msg) {
+        const box = document.getElementById('statusBox');
+        box.className = 'error';
+        box.innerText = 'Execution Fault: ' + msg;
+        document.getElementById('submitBtn').disabled = false;
+    }
+</script>
+</body>
+</html>
