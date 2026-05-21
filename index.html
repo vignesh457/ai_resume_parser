@@ -64,6 +64,9 @@
 </div>
 
 <script>
+    // Pure clean string literal declaration - No trailing slash
+    const API_BASE_URL = 'https://resume-builder-k1fc.onrender.com';
+
     async function startTailoring() {
         const jd = document.getElementById('jd').value.trim();
         const btn = document.getElementById('submitBtn');
@@ -82,8 +85,10 @@
         box.innerText = 'Initializing Secure Job Session...';
 
         try {
-            // Sending down solely the JD mapping token variable parameter
-            const res = await fetch('http://localhost:8000', {
+            // Safe URL parser routing - avoids template literal syntax bugs
+            const postUrl = new URL('', API_BASE_URL).href;
+            
+            const res = await fetch(postUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ jd })
@@ -105,7 +110,12 @@
         const interval = setInterval(async () => {
             try {
                 box.innerText = 'Optimizing matching criteria with Gemini...';
-                const res = await fetch(`http://localhost:8000?task_id=${taskId}`);
+                
+                // Construct URL and append query parameters programmatically 
+                const getUrl = new URL('', API_BASE_URL);
+                getUrl.searchParams.append('task_id', taskId);
+
+                const res = await fetch(getUrl.href);
                 const data = await res.json();
                 
                 if (data.status === "COMPLETED") {
@@ -113,7 +123,6 @@
                     box.style.display = 'none';
                     document.getElementById('submitBtn').disabled = false;
                     
-                    // Populate diagnostics view dashboard
                     document.getElementById('scoreBefore').innerText = data.analytics.ats_score_before + "%";
                     document.getElementById('scoreAfter').innerText = data.analytics.ats_score_after + "%";
                     
@@ -127,9 +136,17 @@
                     
                     document.getElementById('dashboard').style.display = 'block';
                     
-                    // Bind file streaming link explicitly
                     document.getElementById('downloadBtn').onclick = () => {
-                        window.location.href = `http://localhost:8000?task_id=${taskId}&download=true`;
+                        const downloadUrl = new URL('', API_BASE_URL);
+                        downloadUrl.searchParams.append('task_id', taskId);
+                        downloadUrl.searchParams.append('download', 'true');
+
+                        const tempAnchor = document.createElement('a');
+                        tempAnchor.href = downloadUrl.href;
+                        tempAnchor.setAttribute('download', '');
+                        document.body.appendChild(tempAnchor);
+                        tempAnchor.click();
+                        document.body.removeChild(tempAnchor);
                     };
                 } else if (data.status && data.status.startsWith('FAILED')) {
                     clearInterval(interval);
