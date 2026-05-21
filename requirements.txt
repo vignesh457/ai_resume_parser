@@ -1,7 +1,7 @@
-fastapi==0.110.0
-pydantic==2.6.4
+fastapi
+pydantic
 python-docx==1.1.0
-google-genai==2.1.0
+google-genai
 upstash-redis==0.15.0
 requests==2.31.0
 python-dotenv==1.0.1
