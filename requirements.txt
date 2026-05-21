@@ -1,7 +1,7 @@
 fastapi==0.110.0
 pydantic==2.6.4
 python-docx==1.1.0
-google-genai==0.1.1       <-- CHANGE THIS LINE
+google-genai==0.1.1
 upstash-redis==0.15.0
 requests==2.31.0
-python-dotenv==1.0.1      <-- ADD THIS LINE (Since you use load_dotenv)
+python-dotenv==1.0.1
