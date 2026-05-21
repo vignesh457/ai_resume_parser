@@ -181,6 +181,11 @@ def background_tailor_worker(task_id, jd_txt):
         redis.set(f"status:{task_id}", f"FAILED: {str(e)}")
 
 class handler(BaseHTTPRequestHandler):
+    def do_HEAD(self):
+        """Handle internal infrastructure health checks smoothly"""
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -249,6 +254,10 @@ class handler(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     from http.server import HTTPServer
-    server = HTTPServer(('localhost', 8000), handler)
-    print("Local test server running at http://localhost:8000")
+    import os
+    
+    # Dynamically bind to the port Render gives your container instance
+    port = int(os.environ.get("PORT", 8000))
+    server = HTTPServer(('0.0.0.0', port), handler)
+    print(f"Local test server running smoothly on port {port}")
     server.serve_forever()
