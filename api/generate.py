@@ -111,12 +111,13 @@ VIGNESHWAR_BASE_RESUME = {
 def background_tailor_worker(task_id, jd_txt):
     """Worker thread using Vigneshwar's baseline data to target a specific Job Description"""
     try:
+        # Define a clean structural blueprint WITHOUT hardcoded placeholder values
         json_blueprint = """{
           "analytics": {
-             "ats_score_before": 65,
-             "ats_score_after": 95,
+             "ats_score_before": "An integer between 0 and 100 representing the match score of the original baseline resume against the JD",
+             "ats_score_after": "An integer between 0 and 100 representing the optimized match score after applying your keyword tailored adjustments",
              "modifications": [
-                {"section": "Skills", "description": "Mirrored exact keyword conventions found in target job description"}
+                {"section": "The specific resume section modified", "description": "A brief explanation of what keywords or framing were optimized"}
              ]
           },
           "resume_data": {
@@ -139,6 +140,10 @@ def background_tailor_worker(task_id, jd_txt):
         You are an expert resume writer and software engineer ATS specialist.
         Task: Review the baseline resume JSON profile for Vigneshwar Reddy Donapati and tailor it to maximize match parameters against the provided Job Description (JD).
         
+        CRITICAL SCORING MANDATE:
+        1. Calculate a genuine, honest 'ats_score_before' by comparing how many core tech stack items, frameworks, and job requirements from the target JD are missing or named differently in the current baseline profile.
+        2. Calculate a realistic 'ats_score_after' based on how closely your newly tailored version matches the exact target JD specifications. Do not simply default to 95; make it an accurate reflection of the alignment.
+        
         CRITICAL ATS KEYWORD MATCHING RULES:
         1. Parse the target Job Description closely for literal spelling and punctuation preferences.
         2. Replicate the EXACT phrasing, spelling, capitalization, and punctuation variants used in the job post text.
@@ -152,7 +157,7 @@ def background_tailor_worker(task_id, jd_txt):
         2. Extract and preserve real URLs/hyperlinks for projects, video demos, or code repositories.
         3. Extract and preserve the "Certifications" and "Coding Profiles" sections completely from the input data profile.
         
-        Output Requirement: Return output exclusively in valid JSON matching this structure format:
+        Output Requirement: Return output exclusively in valid JSON matching this schema format structure:
         {json_blueprint}
         
         Baseline Profile Data: {json.dumps(VIGNESHWAR_BASE_RESUME)}
