@@ -40,7 +40,7 @@ VIGNESHWAR_BASE_RESUME = {
         {
             "title": "Associate Software Engineering",
             "company": "Accenture",
-            "dates": "Nov 2024 – Present",
+            "dates": "November 2024 – June 2026",
             "bullets": [
                 "Developed and maintained a scalable microservices application using Spring Boot, Node.js, and React to support critical import/export workflows and reliable cross-system data processing.",
                 "Troubleshot and resolved complex production incidents by tracing requests across backend services, SQL databases, Azure Service Bus DLQ, and logs, reducing issue recurrence and improving overall system reliability.",
@@ -50,7 +50,7 @@ VIGNESHWAR_BASE_RESUME = {
         {
             "title": "Associate Software Engineering",
             "company": "Tech Mahindra",
-            "dates": "Mar 2024 – Nov 2024",
+            "dates": "March 2024 – November 2024",
             "bullets": [
                 "Developed a full-stack internal productivity tool using React.js and Node.js to automate and streamline team workflows, resulting in improved operational efficiency and reduced manual effort.",
                 "Implemented Role-Based Authentication (RBAC) and integrated secure internal APIs in Node.js, ensuring controlled data access and reliable data management across multiple user roles."
@@ -59,12 +59,21 @@ VIGNESHWAR_BASE_RESUME = {
     ],
     "projects": [
         {
+            "title": "ResumeParser",
+            "link": "https://github.com/vignesh457/ai_resume_parser",
+            "video_demo": "",
+            "bullets": [
+                "Developed a AI Agent for ATS Resume Tailoring that processes target job descriptions to automatically optimize my resume for literal keyword matching and semantic alignment using Gemini LLM.",
+                "Built an asynchronous concurrency architecture using Python threads and Upstash Redis to delegate intensive LLM generation to background processes, eliminating request timeout limits and ensuring smooth UI progress tracking"
+            ]
+        },
+        {
             "title": "NumberHunt",
             "link": "https://github.com/vignesh457/number-hunt",
             "video_demo": "",
             "bullets": [
                 "Built a multiplayer reflex-based game using React Native (Expo, TypeScript) with real-time gameplay via Socket.IO WebSocket, backend (Node.js + Express), supporting solo(offline) and multi-player(Room-based online) modes with animations, bgm, and seamless UI using Expo Router, NativeWind, and Moti.",
-                "•	Designed and deployed a global leaderboard and user state system with Redux Toolkit, PostgreSQL, and Prisma ORM; packaged the app with Expo EAS and deployed the frontend on PhonePe Indus Appstore, ensuring optimized production-ready builds."
+                "Designed and deployed a global leaderboard and user state system with Redux Toolkit, PostgreSQL, and Prisma ORM; packaged the app with Expo EAS and deployed the frontend on PhonePe Indus Appstore, ensuring optimized production-ready builds."
             ]
         },
         {
@@ -75,18 +84,13 @@ VIGNESHWAR_BASE_RESUME = {
                 "Developed a responsive full-stack Artist Showcase Platform designed to help independent artists display their portfolios, manage profiles, and reach a wider audience. Built using React.js, Node.js, and MongoDB, incorporating secure JWT authentication, protected routes, and role-based access control for artwork management.",
                 "Improved application performance and usability through React memoization, lazy loading, advanced search, and category filtering features, delivering a smooth browsing experience for users."
             ]
-        },
-        {
-            "title": "Spotify Clone",
-            "link": "https://spotify-vignesh.netlify.app",
-            "video_demo": "",
-            "bullets": [
-                "Built a responsive Spotify clone with HTML, CSS, and JavaScript with asynchronous programming.",
-                "Implemented essential features like play/pause, previous/next controls, progress bar, volume adjustment, and search functionality using JavaScript’s DOM manipulation and event handling."
-            ]
         }
     ],
     "certifications": [
+        {
+            "title": "AWS Certified AI Practitioner",
+            "link": "https://www.credly.com/badges/d9320494-0d8b-4175-823a-e7772c19acdf"
+        },
         {
             "title": "Oracle Certified Associate, Java SE 8 Programmer",
             "link": "https://drive.google.com/file/d/1MeFkyClzrviKFX2MXWcz26PB7Obn1-Mk/view"
@@ -153,7 +157,7 @@ def background_tailor_worker(task_id, jd_txt):
         3. Match these tokens exactly across your tailored skills and experience strings to ensure a perfect literal hit for strict ATS tokenizers.
         
         CRITICAL CONTENT DIRECTIONS:
-        1. Keep ALL baseline technical items under the skills categories intact. Do not drop or abbreviate any frameworks.
+        1. Keep ALL baseline technical items under the skills categories intact. Do not drop or abbreviate any frameworks and not to add keywords that are completely irrelevant to the baseline profile just for the sake of keyword stuffing. Instead, focus on rephrasing and adding relevant keywords that are actually supported by Vigneshwar's experience and projects.
         2. Extract and preserve real URLs/hyperlinks for projects, video demos, or code repositories.
         3. Extract and preserve the "Certifications" and "Coding Profiles" sections completely from the input data profile.
         
