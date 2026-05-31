@@ -27,6 +27,31 @@ def build_docx_binary(user_data):
         run.font.italic = italic
         run.font.color.rgb = color
 
+    # Enforce Calibri across common styles so hyperlink runs inherit the font
+    try:
+        normal_style = doc.styles['Normal']
+        normal_style.font.name = 'Calibri'
+        normal_style.font.size = Pt(10)
+    except Exception:
+        pass
+
+    try:
+        hyperlink_style = doc.styles['Hyperlink']
+        hyperlink_style.font.name = 'Calibri'
+        hyperlink_style.font.size = Pt(9.5)
+        hyperlink_style.font.color.rgb = COLOR_PRIMARY
+    except Exception:
+        pass
+
+    # Ensure list and heading styles also use Calibri where available
+    for _s in ('List Bullet', 'List Number', 'Heading 1', 'Heading 2'):
+        try:
+            s = doc.styles[_s]
+            s.font.name = 'Calibri'
+            s.font.size = Pt(10)
+        except Exception:
+            pass
+
     def add_section_heading(text):
         p = doc.add_paragraph()
         p.paragraph_format.space_before = Pt(10)
@@ -54,6 +79,20 @@ def build_docx_binary(user_data):
         rStyle = OxmlElement('w:rStyle')
         rStyle.set(qn('w:val'), 'Hyperlink')
         rPr.append(rStyle)
+        # Specify Calibri font for the hyperlink run so it matches document text
+        rFonts = OxmlElement('w:rFonts')
+        rFonts.set(qn('w:ascii'), 'Calibri')
+        rFonts.set(qn('w:hAnsi'), 'Calibri')
+        rPr.append(rFonts)
+
+        # Set size (10pt -> w:sz value is half-points) and color to primary link color
+        rSz = OxmlElement('w:sz')
+        rSz.set(qn('w:val'), '20')
+        rPr.append(rSz)
+
+        rColor = OxmlElement('w:color')
+        rColor.set(qn('w:val'), '0B5394')
+        rPr.append(rColor)
         new_run.append(rPr)
 
         new_text = OxmlElement('w:t')
@@ -195,7 +234,7 @@ def build_docx_binary(user_data):
             p_cert.add_run(title)
             if link:
                 p_cert.add_run(" | ")
-                add_hyperlink(p_cert, normalize_url(link), "Link")
+                add_hyperlink(p_cert, normalize_url(link), "Certificate")
 
     # ==================== CODING PROFILES SECTION ====================
     if 'coding_profiles' in user_data and user_data['coding_profiles']:
@@ -233,7 +272,7 @@ def build_docx_binary(user_data):
             p_det = doc.add_paragraph()
             p_det.paragraph_format.space_after = Pt(3)
             r_det = p_det.add_run(f"{edu.get('degree', '')} in {edu.get('field', '')} | GPA: {edu.get('gpa', '')}")
-            set_run_font(r_det, name='Calibri', size=9.5, italic=False, color=COLOR_MUTED)
+            set_run_font(r_det, name='Calibri', size=10, italic=False, color=COLOR_MUTED)
 
     target_stream = io.BytesIO()
     doc.save(target_stream)

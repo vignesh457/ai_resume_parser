@@ -106,7 +106,7 @@ VIGNESHWAR_BASE_RESUME = {
         }
     ],
     "coding_profiles": [
-        "LeetCode (1530, Top 25%, 350+ solved)",
+        "LeetCode (1530, Top 25%, 400+ solved)",
         "GFG (580 score, 250+ solved)",
         "CodeChef (1554, 2 ★ , 126 contests)"
     ]
