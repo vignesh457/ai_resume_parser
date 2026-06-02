@@ -171,7 +171,7 @@ def build_docx_binary(user_data):
                 parts = bullet.split("**")
                 for idx, part in enumerate(parts):
                     br = bp.add_run(part)
-                    set_run_font(br, name='Calibri', size=10, bold=(idx % 2 == 1), color=COLOR_TEXT)
+                    set_run_font(br, name='Calibri', size=10, bold=False, color=COLOR_TEXT)
 
     # ==================== SKILLS SECTION ====================
     if 'skills' in user_data and user_data['skills']:
@@ -219,7 +219,7 @@ def build_docx_binary(user_data):
                 parts = bullet.split("**")
                 for idx, part in enumerate(parts):
                     br = bp.add_run(part)
-                    set_run_font(br, name='Calibri', size=10, bold=(idx % 2 == 1), color=COLOR_TEXT)
+                    set_run_font(br, name='Calibri', size=10, bold=False, color=COLOR_TEXT)
 
     # ==================== CERTIFICATIONS SECTION ====================
     if 'certifications' in user_data and user_data['certifications']:

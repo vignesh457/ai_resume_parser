@@ -161,6 +161,13 @@ def background_tailor_worker(task_id, jd_txt):
         2. Extract and preserve real URLs/hyperlinks for projects, video demos, or code repositories.
         3. Extract and preserve the "Certifications" and "Coding Profiles" sections completely from the input data profile.
         
+        ADDITIONAL COMPREHENSIVE ATS INTEGRITY RULES:
+        1. Target Job Title Alignment: Adapt the job title of the most recent role (Accenture) to mirror the core title of the JD exactly so it hits strict recruiter title query filters.
+        2. Strict Hard Skills Only: Limit the skills arrays entirely to hard technical frameworks, languages, databases, and tools. Do not let the model inject any conversational or soft skills (e.g., "communication", "team player").
+        3. Two-Zone Keyword Distribution: Ensure that critical target keywords extracted from the JD are heavily mirrored in BOTH your skills categories and naturally woven inside the experience bullet points, few in projects if relevant and applicable.
+        4. Recency Weighting: Prioritize embedding the most crucial tech stack keywords from the job description directly into your most recent professional role (Accenture) to satisfy recruiter recency searches.
+        5. Strict Keyword Matching: Ensure that the model precisely matches the exact phrasing, spelling, capitalization, and punctuation variants used in the target JD.
+
         Output Requirement: Return output exclusively in valid JSON matching this schema format structure:
         {json_blueprint}
         
